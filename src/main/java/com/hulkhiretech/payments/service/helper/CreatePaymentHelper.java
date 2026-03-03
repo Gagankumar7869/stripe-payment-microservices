@@ -9,6 +9,8 @@ import org.springframework.util.MultiValueMap;
 
 import com.hulkhiretech.payments.constant.Constant;
 import com.hulkhiretech.payments.http.HttpRequest;
+import com.hulkhiretech.payments.pojo.CreatePaymentReq;
+import com.hulkhiretech.payments.pojo.LineItem;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,21 +26,16 @@ public class CreatePaymentHelper {
 	@Value("${stripe.create.session.url}")
 	private String stripeCreateSessionUrl ;
 	
-	public HttpRequest prepareStripeCreateSessionRequest() {
+	public HttpRequest prepareStripeCreateSessionRequest(CreatePaymentReq createPaymentReq) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setBasicAuth(stripeApiKey, "");
 				
 		httpHeaders.set("Content-Type", "application/x-www-form-urlencoded");
 
-		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 
-		formData.add(Constant.CREATE_SESSION_MODE, "payment");
-		formData.add(Constant.CREATE_SESSION_SUCCESS_URL, "https://example.com/success");
+		MultiValueMap<String, String> formData = prepareFormUrlEncodedData(createPaymentReq);
 		
-		formData.add("line_items[0][quantity]", "2");
-		formData.add("line_items[0][price_data][currency]", "eur");
-		formData.add("line_items[0][price_data][product_data][name]", "Phone");
-		formData.add("line_items[0][price_data][unit_amount]", "10000");
+		log.info("Prepared form data for Stripe create session request formData: {}", formData);
 
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setHttpMethod(HttpMethod.POST);
@@ -46,6 +43,52 @@ public class CreatePaymentHelper {
 		httpRequest.setHttpHeaders(httpHeaders);
 		httpRequest.setRequestData(formData);
 		return httpRequest;
+	}
+	public static MultiValueMap<String, String> prepareFormUrlEncodedData(
+	        CreatePaymentReq request) {
+
+	    MultiValueMap<String, String> formUrlEncodedData =
+	            new LinkedMultiValueMap<>();
+
+	    // Mandatory fields
+	    formUrlEncodedData.add(Constant.CREATE_SESSION_MODE,
+	            Constant.CREATE_SESSION_MODE_PAYMENT);
+
+	    formUrlEncodedData.add(Constant.CREATE_SESSION_SUCCESS_URL,
+	            request.getSuccessUrl());
+
+	    formUrlEncodedData.add(Constant.CREATE_SESSION_CANCEL_URL,
+	            request.getCancelUrl());
+
+	    // Line items
+	    if (request.getLineItems() != null
+	            && !request.getLineItems().isEmpty()) {
+
+	        for (int i = 0; i < request.getLineItems().size(); i++) {
+
+	            LineItem item = request.getLineItems().get(i);
+
+	            String baseKey = Constant.LINE_ITEMS + "[" + i + "]";
+
+	            formUrlEncodedData.add(
+	                baseKey + Constant.QUANTITY,
+	                String.valueOf(item.getQuantity()));
+
+	            formUrlEncodedData.add(
+	                baseKey + Constant.PRICE_DATA_CURRENCY,
+	                item.getCurrency());
+
+	            formUrlEncodedData.add(
+	                baseKey + Constant.PRICE_DATA_UNIT_AMOUNT,
+	                String.valueOf(item.getUnitAmount()));
+
+	            formUrlEncodedData.add(
+	                baseKey + Constant.PRICE_DATA_PRODUCT_NAME,
+	                item.getProductName());
+	        }
+	    }
+
+	    return formUrlEncodedData;
 	}
 
 

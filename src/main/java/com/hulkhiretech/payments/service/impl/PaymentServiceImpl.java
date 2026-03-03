@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.hulkhiretech.payments.http.HttpRequest;
 import com.hulkhiretech.payments.http.HttpServiceEngine;
+import com.hulkhiretech.payments.pojo.CreatePaymentReq;
 import com.hulkhiretech.payments.service.helper.CreatePaymentHelper;
 import com.hulkhiretech.payments.service.interfaces.PaymentService;
 
@@ -19,10 +20,10 @@ public class PaymentServiceImpl implements PaymentService {
 	private final CreatePaymentHelper createPaymentHelper;
 
 	@Override
-	public String createPayment() {
+	public String createPayment(CreatePaymentReq createPaymentReq) {
 		log.info("Processing payment...");
 
-		HttpRequest httpRequest = createPaymentHelper.prepareStripeCreateSessionRequest();
+		HttpRequest httpRequest = createPaymentHelper.prepareStripeCreateSessionRequest(createPaymentReq);
 
 		String httpResponse = httpServiceEngine.makeHttpCall(httpRequest);
 		log.info("Received response from HttpServiceEngine: {}", httpResponse);
