@@ -1,8 +1,9 @@
 package com.hulkhiretech.payments.service.interfaces;
 
 import com.hulkhiretech.payments.pojo.CreatePaymentReq;
+import com.hulkhiretech.payments.pojo.PaymentResponse;
 
 public interface PaymentService {
-	public String createPayment(CreatePaymentReq createPaymentReq);
+	public PaymentResponse createPayment(CreatePaymentReq createPaymentReq);
 
 }

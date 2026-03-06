@@ -16,7 +16,7 @@ public class HttpServiceEngine {
 	private final RestClient restClient;
 
 
-	public String makeHttpCall(HttpRequest httpRequest) {
+	public ResponseEntity<String> makeHttpCall(HttpRequest httpRequest) {
 		log.info("Making API call to Stripe...");
 
 		ResponseEntity<String> httpResponse=restClient.method(httpRequest.getHttpMethod())
@@ -29,7 +29,7 @@ public class HttpServiceEngine {
 		log.info("Received response from Stripe API - Status Code: {}, Body: {}",
 				httpResponse.getStatusCode(), httpResponse.getBody());
 
-		return "\n"+httpResponse.getBody();
+		return httpResponse;
 	}
 
 
