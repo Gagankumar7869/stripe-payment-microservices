@@ -1,8 +1,10 @@
 package com.hulkhiretech.payments.service.impl;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.hulkhiretech.payments.exception.StripeProviderException;
 import com.hulkhiretech.payments.http.HttpRequest;
 import com.hulkhiretech.payments.http.HttpServiceEngine;
 import com.hulkhiretech.payments.pojo.CreatePaymentReq;
@@ -27,6 +29,14 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public PaymentResponse createPayment(CreatePaymentReq createPaymentReq) {
 		log.info("Processing payment...");
+		
+		if (createPaymentReq.getSuccessUrl() == null || createPaymentReq.getSuccessUrl().isEmpty()) {
+			log.error("Missing successUrl in CreatePaymentReq");
+			throw new StripeProviderException(
+					"30001",
+					"Missing required field: successUrl",
+					HttpStatus.BAD_REQUEST);
+		}
 
 		HttpRequest httpRequest = createPaymentHelper.prepareStripeCreateSessionRequest(createPaymentReq);
 
@@ -40,10 +50,10 @@ public class PaymentServiceImpl implements PaymentService {
 		log.info("Mapped to PaymentResponse: {}", paymentResponse);
 		return paymentResponse;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Write a map method to take CheckoutSessionResponse
 	 * and convert it to PaymentResponse which is
@@ -60,14 +70,14 @@ public class PaymentServiceImpl implements PaymentService {
 		log.debug("Mapped CheckoutSessionResponse to PaymentResponse: {}", paymentResponse);
 		return paymentResponse;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
+
+
+
+
+
+
+
+
+
 }

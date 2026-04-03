@@ -26,13 +26,13 @@ public class PaymentController {
 
 
 	@Operation(summary = "Create a new payment session",
-		description = "Creates a Stripe checkout session using the provided payment details and returns a hosted page URL and session id.",
-		responses = {
-			@ApiResponse(responseCode = "200", description = "Payment session created successfully", content = @Content(schema = @Schema(implementation = PaymentResponse.class))),
-			@ApiResponse(responseCode = "400", description = "Invalid request payload"),
-			@ApiResponse(responseCode = "500", description = "Internal server error")
-		}
-	)
+			description = "Creates a Stripe checkout session using the provided payment details and returns a hosted page URL and session id.",
+			responses = {
+					@ApiResponse(responseCode = "200", description = "Payment session created successfully", content = @Content(schema = @Schema(implementation = PaymentResponse.class))),
+					@ApiResponse(responseCode = "400", description = "Invalid request payload"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+	}
+			)
 	@PostMapping
 	public PaymentResponse createPayment(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "CreatePaymentReq containing success/cancel URLs and the list of line items to charge") @RequestBody CreatePaymentReq createPaymentReq) {
 
