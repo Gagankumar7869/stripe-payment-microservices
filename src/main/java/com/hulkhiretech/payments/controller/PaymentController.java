@@ -34,7 +34,9 @@ public class PaymentController {
 	}
 			)
 	@PostMapping
-	public PaymentResponse createPayment(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "CreatePaymentReq containing success/cancel URLs and the list of line items to charge") @RequestBody CreatePaymentReq createPaymentReq) {
+	public PaymentResponse createPayment(@io.swagger.v3.oas.annotations.parameters
+			.RequestBody(description = "CreatePaymentReq containing success/cancel URLs and the list of line items to charge")
+	@RequestBody CreatePaymentReq createPaymentReq) {
 
 		log.info("Received request to create payment createPaymentReq: {}", createPaymentReq);
 

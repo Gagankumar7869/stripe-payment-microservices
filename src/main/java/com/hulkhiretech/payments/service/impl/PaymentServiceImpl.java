@@ -13,6 +13,7 @@ import com.hulkhiretech.payments.service.helper.CreatePaymentHelper;
 import com.hulkhiretech.payments.service.interfaces.PaymentService;
 import com.hulkhiretech.payments.stripe.CheckoutSessionResponse;
 import com.hulkhiretech.payments.util.JsonUtil;
+import com.hulkhiretech.payments.service.ValidationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,18 +26,13 @@ public class PaymentServiceImpl implements PaymentService {
 	private final HttpServiceEngine httpServiceEngine;
 	private final CreatePaymentHelper createPaymentHelper;
 	private final JsonUtil jsonUtil;
+	private final ValidationService validationService;
 
 	@Override
 	public PaymentResponse createPayment(CreatePaymentReq createPaymentReq) {
 		log.info("Processing payment...");
-		
-		if (createPaymentReq.getSuccessUrl() == null || createPaymentReq.getSuccessUrl().isEmpty()) {
-			log.error("Missing successUrl in CreatePaymentReq");
-			throw new StripeProviderException(
-					"30001",
-					"Missing required field: successUrl",
-					HttpStatus.BAD_REQUEST);
-		}
+		// validate request fields
+		validationService.isValid(createPaymentReq);
 
 		HttpRequest httpRequest = createPaymentHelper.prepareStripeCreateSessionRequest(createPaymentReq);
 
