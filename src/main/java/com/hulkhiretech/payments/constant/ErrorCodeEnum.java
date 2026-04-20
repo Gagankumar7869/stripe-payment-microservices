@@ -4,6 +4,11 @@ package com.hulkhiretech.payments.constant;
  * Centralized error codes and one-line messages for validation errors.
  */
 public enum ErrorCodeEnum {
+	
+	GENERIC_ERROR("30000", "An unexpected error occurred. Please try again later."),
+	
+	ERROR_CONNECTING_TO_EXTERNAL_SERVICE("30012", "Error connecting to external service"),
+	
     MISSING_REQUEST_BODY("30001", "Missing request body: CreatePaymentReq"),
     MISSING_SUCCESS_URL("30002", "Missing required field: successUrl"),
     MISSING_CANCEL_URL("30003", "Missing required field: cancelUrl"),
@@ -16,8 +21,8 @@ public enum ErrorCodeEnum {
     INVALID_UNIT_AMOUNT("30010", "Invalid unitAmount (must be > 0) in line item"),
     INVALID_QUANTITY("30011", "Invalid quantity (must be > 0) in line item");
 
-    private final String errorCode;
-    private final String errorMessage;
+   private final String errorCode;
+    private final String errorMessage; 
 
     ErrorCodeEnum(String errorCode, String errorMessage) {
         this.errorCode = errorCode;

@@ -33,6 +33,8 @@ public class PaymentServiceImpl implements PaymentService {
 		log.info("Processing payment...");
 		// validate request fields
 		validationService.isValid(createPaymentReq);
+		
+		
 
 		HttpRequest httpRequest = createPaymentHelper.prepareStripeCreateSessionRequest(createPaymentReq);
 
