@@ -54,7 +54,9 @@ public class HttpServiceEngine {
 			}
 
 			//Prepare ResponseEntity from the exception details and return to the caller
-			ResponseEntity<String> errorResponse=ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders())
+			ResponseEntity<String> errorResponse= ResponseEntity
+					.status(e.getStatusCode())
+					.headers(e.getResponseHeaders())
 					.body(e.getResponseBodyAsString());
 
 			return errorResponse;
