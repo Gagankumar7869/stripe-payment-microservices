@@ -19,7 +19,9 @@ public enum ErrorCodeEnum {
     MISSING_CURRENCY("30008", "Missing required field: currency in line item"),
     INVALID_CURRENCY_CODE("30009", "Invalid currency code (expected 3 letters) in line item"),
     INVALID_UNIT_AMOUNT("30010", "Invalid unitAmount (must be > 0) in line item"),
-    INVALID_QUANTITY("30011", "Invalid quantity (must be > 0) in line item");
+    INVALID_QUANTITY("30011", "Invalid quantity (must be > 0) in line item"),
+    STRIPE_API_ERROR("30013","<Dynamically prepare based on stripe error response>"),
+    INVALID_STRIPE_RESPONSE("30014","Invalid response received from Stripe API");
 
    private final String errorCode;
     private final String errorMessage; 

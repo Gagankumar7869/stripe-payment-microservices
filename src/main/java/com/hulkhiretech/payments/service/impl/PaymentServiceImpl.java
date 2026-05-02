@@ -25,6 +25,24 @@ public class PaymentServiceImpl implements PaymentService {
 	private final CreatePaymentHelper createPaymentHelper;
 	private final JsonUtil jsonUtil;
 	private final ValidationService validationService;
+	
+	/**
+	 * Creates a payment by initiating a Stripe Checkout Session.
+	 *
+	 * Flow:
+	 * 1. Validates the incoming payment request.
+	 * 2. Prepares the HTTP request for Stripe API.
+	 * 3. Calls the external HTTP service to create a checkout session.
+	 * 4. Processes the Stripe response and converts it into a CheckoutSessionResponse.
+	 * 5. Maps the CheckoutSessionResponse to the internal PaymentResponse object.
+	 *
+	 * Note:
+	 * - If the Stripe API returns an error, an exception is thrown during response processing.
+	 * - Successful execution of processStripeResponse() implies a valid Stripe response.
+	 *
+	 * @param createPaymentReq the request containing payment details
+	 * @return PaymentResponse containing the checkout/session details
+	 */
 
 	@Override
 	public PaymentResponse createPayment(CreatePaymentReq createPaymentReq) {
@@ -39,45 +57,20 @@ public class PaymentServiceImpl implements PaymentService {
 		ResponseEntity<String> httpResponse = httpServiceEngine.makeHttpCall(httpRequest);
 		log.info("Received response from HttpServiceEngine: {}", httpResponse);
 
-		CheckoutSessionResponse checkoutSessionResponse=processStripeResponse(httpResponse);
+		CheckoutSessionResponse checkoutSessionResponse = createPaymentHelper.processStripeResponse(httpResponse);
+
+		checkoutSessionResponse=createPaymentHelper.processStripeResponse(httpResponse);
 		log.info("Processed Stripe response and obtained CheckoutSessionResponse: {}", checkoutSessionResponse);
 
 		//Note: The above method executes means its only success.
 		//For error above method will throw exception
-
 
 		PaymentResponse paymentResponse = mapToPaymentResponse(checkoutSessionResponse);
 		log.info("Mapped to PaymentResponse: {}", paymentResponse);
 		return paymentResponse;
 	}
 
-	private CheckoutSessionResponse processStripeResponse(ResponseEntity<String> httpResponse) {
-
-		//Check if httpResponse is 2xx, then convert to checkoutSessionResponse
-		if (httpResponse.getStatusCode().is2xxSuccessful()) {
-			log.info("Received successful response from Stripe API: Status Code: {}, Body: {}",
-					httpResponse.getStatusCode(), httpResponse.getBody());
-
-			String body = httpResponse.getBody();
-			log.debug("Processing successful response from Stripe: {}", body);
-
-
-			CheckoutSessionResponse checkoutSessionResponse = jsonUtil.convertJsonToObject(body, CheckoutSessionResponse.class);
-
-			if(checkoutSessionResponse!=null && checkoutSessionResponse.getUrl()!=null) {
-				log.info("Stripe Checkout session created successfully with  sessionId: {} and url: {}", checkoutSessionResponse.getId(), checkoutSessionResponse.getUrl());
-				//In the below line we are returning CheckoutSessionResponse obj
-				//SUCCESS
-				return checkoutSessionResponse;
-			} 
-
-			log.error("Stripe API call returned 2xx status but response body is invalid or missing sesion url. Status Code: {}, Body: {}", httpResponse.getStatusCode(), httpResponse.getBody());
-
-		}
-		throw new RuntimeException("Failed to create Stripe Checkout session. HTTP Status: " + httpResponse.getStatusCode() + ", Response Body: " + httpResponse.getBody());
-
-	}
-
+	
 	/**
 	 * Write a map method to take CheckoutSessionResponse
 	 * and convert it to PaymentResponse which is
