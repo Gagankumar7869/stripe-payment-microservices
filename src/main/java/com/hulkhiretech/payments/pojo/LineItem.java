@@ -20,7 +20,7 @@ public class LineItem {
 
     @NotNull(message = "UNIT_AMOUNT_NULL")
     @Positive(message = "UNIT_AMOUNT_INVALID")
-    private Long unitAmount;
+    private Integer unitAmount;
 
     @NotNull(message = "QUANTITY_NULL")
     @Min(value = 1, message = "QUANTITY_INVALID")
