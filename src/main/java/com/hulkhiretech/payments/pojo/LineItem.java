@@ -8,9 +8,13 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import jakarta.validation.constraints.*;
+import lombok.Data;
+
 @Data
 public class LineItem {
-	@NotBlank(message = "PRODUCT_NAME_BLANK")
+
+    @NotBlank(message = "PRODUCT_NAME_BLANK")
     @Size(max = 100, message = "PRODUCT_NAME_TOO_LONG")
     private String productName;
 
@@ -25,4 +29,4 @@ public class LineItem {
     @NotNull(message = "QUANTITY_NULL")
     @Min(value = 1, message = "QUANTITY_INVALID")
     private Integer quantity;
-    }
+}
