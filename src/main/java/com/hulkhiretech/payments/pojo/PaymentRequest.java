@@ -14,4 +14,5 @@ public class PaymentRequest {
     @NotNull(message = "PAYMENT_NULL")
     @Valid
     private Payment payment;
+
 }

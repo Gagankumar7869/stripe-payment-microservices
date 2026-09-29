@@ -10,15 +10,15 @@ import lombok.Data;
 public class User {
 
     @NotBlank(message = "END_USER_ID_BLANK")
-    @Size(max = 100, message = "END_USER_ID_INVALID")
+    @Size(max = 64, message = "END_USER_ID_TOO_LONG")
     private String endUserID;
 
-    @NotBlank(message = "FIRST_NAME_BLANK")
-    @Size(max = 50, message = "FIRST_NAME_INVALID")
+    @NotBlank(message = "FIRSTNAME_BLANK")
+    @Size(max = 50, message = "FIRSTNAME_TOO_LONG")
     private String firstname;
 
-    @NotBlank(message = "LAST_NAME_BLANK")
-    @Size(max = 50, message = "LAST_NAME_INVALID")
+    @NotBlank(message = "LASTNAME_BLANK")
+    @Size(max = 50, message = "LASTNAME_TOO_LONG")
     private String lastname;
 
     @NotBlank(message = "EMAIL_BLANK")
@@ -27,7 +27,7 @@ public class User {
 
     @NotBlank(message = "MOBILE_PHONE_BLANK")
     @Pattern(
-        regexp = "^\\+?[1-9]\\d{7,14}$",
+        regexp = "^\\+?[0-9]{8,15}$",
         message = "MOBILE_PHONE_INVALID"
     )
     private String mobilePhone;
