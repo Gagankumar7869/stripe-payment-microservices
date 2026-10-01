@@ -24,7 +24,8 @@ public class HttpServiceEngine {
 
 	@CircuitBreaker(name = "payment-validation-service", fallbackMethod = "fallbackProcessPayment")
 	public ResponseEntity<String> makeHttpCall(HttpRequest httpRequest) {
-		log.info("Making HTTP call to external service...");
+		log.info("Making HTTP call to external service: {}", httpRequest.getUrl());
+
 		try {
 			ResponseEntity<String> httpResponse = restClient
 					.method(httpRequest.getHttpMethod())
@@ -37,29 +38,26 @@ public class HttpServiceEngine {
 			log.info("HTTP call completed. Status code: {}", httpResponse.getStatusCode());
 			return httpResponse;
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			log.error("HTTP error occurred. Status code: {}", ex.getStatusCode());
+			log.error("HTTP client/server error occurred. Status code: {}", ex.getStatusCode());
+			
+			// Let downstream outages propagate so Resilience4j tracks them
 			if (ex.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE || ex.getStatusCode() == HttpStatus.GATEWAY_TIMEOUT) {
-				throw new PaymentValidationException(
-						ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorCode(),
-						ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorMessage(),
-						HttpStatus.INTERNAL_SERVER_ERROR);
+				throw ex;
 			}
 			return ResponseEntity.status(ex.getStatusCode()).body(ex.getResponseBodyAsString());
-		} catch (Exception ex) {
-			log.error("Error occurred while making HTTP call: ", ex);
-			throw new PaymentValidationException(
-					ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorCode(),
-					ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		// Notice: No generic catch (Exception ex) block here.
+		// Connection/timeout exceptions (ResourceAccessException, SocketException)
+		// must escape makeHttpCall so @CircuitBreaker intercepts them and invokes fallbackProcessPayment.
 	}
-	
+
 	public ResponseEntity<String> fallbackProcessPayment(HttpRequest httpRequest, Throwable t) {
-		log.error("Fallback method called due to: {}", t.getMessage(), t);
+		log.error("Resilience4j Circuit Breaker fallback triggered! Downstream service unreachable: {}", t.getMessage());
+		
 		throw new PaymentValidationException(
 				ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorCode(),
-				ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorMessage(),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				"External payment service is temporarily unavailable. Please try again later.",
+				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
 	@PostConstruct
