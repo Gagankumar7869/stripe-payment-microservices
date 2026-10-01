@@ -40,7 +40,6 @@ public class PaymentController {
 
 		log.info("Received request to create payment createPaymentReq: {}", createPaymentReq);
 
-		// Simulate payment processing logic here
 
 		PaymentResponse paymentResponse= paymentService.createPayment(createPaymentReq);
 

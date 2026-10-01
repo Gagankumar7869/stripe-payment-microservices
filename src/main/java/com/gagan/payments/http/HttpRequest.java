@@ -10,6 +10,6 @@ public class HttpRequest {
 	private HttpHeaders httpHeaders;
 	private String url;
 	private Object requestData;
-	
+
 
 }

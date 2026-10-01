@@ -6,6 +6,6 @@ import lombok.Data;
 public class StripeErrorResponse {
 	private StripeError error;
 
-	
+
 
 }

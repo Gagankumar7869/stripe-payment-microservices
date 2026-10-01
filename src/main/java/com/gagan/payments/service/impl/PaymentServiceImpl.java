@@ -25,7 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
 	private final CreatePaymentHelper createPaymentHelper;
 	private final JsonUtil jsonUtil;
 	private final ValidationService validationService;
-	
+
 	/**
 	 * Creates a payment by initiating a Stripe Checkout Session.
 	 *
@@ -36,7 +36,7 @@ public class PaymentServiceImpl implements PaymentService {
 	 * 4. Processes the Stripe response and converts it into a CheckoutSessionResponse.
 	 * 5. Maps the CheckoutSessionResponse to the internal PaymentResponse object.
 	 *
-	 * Note:
+	 * 
 	 * - If the Stripe API returns an error, an exception is thrown during response processing.
 	 * - Successful execution of processStripeResponse() implies a valid Stripe response.
 	 *
@@ -62,7 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
 		checkoutSessionResponse=createPaymentHelper.processStripeResponse(httpResponse);
 		log.info("Processed Stripe response and obtained CheckoutSessionResponse: {}", checkoutSessionResponse);
 
-		//Note: The above method executes means its only success.
+		// The above method executes means its only success.
 		//For error above method will throw exception
 
 		PaymentResponse paymentResponse = mapToPaymentResponse(checkoutSessionResponse);
@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
 		return paymentResponse;
 	}
 
-	
+
 	/**
 	 * Write a map method to take CheckoutSessionResponse
 	 * and convert it to PaymentResponse which is

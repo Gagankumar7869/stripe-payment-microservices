@@ -11,12 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AppConfig {
 	@Bean
-	 RestClient restClient(Builder builder) {
+	RestClient restClient(Builder builder) {
 		log.info("Creating RestClient bean ....");
-		
-		
+
+
 		return builder.build() ;
-		
+
 	}
 
 }

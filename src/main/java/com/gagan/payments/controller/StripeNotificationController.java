@@ -18,20 +18,20 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class StripeNotificationController {
 
-    private final StripeNotificationService stripeNotificationService;
-    
-    @PostMapping
-    public ResponseEntity<Void> process(
-            @RequestHeader(value = "Stripe-Signature", required = false) 
-            String stripeSignature,
-            @RequestBody String jsonRequest) {
-        // No business logic here — delegate to service and acknowledge with 200 OK
-        log.info("Received Stripe notification payload of length {}", 
-                jsonRequest != null ? jsonRequest.length() : 0);
-        log.info("Stripe-Signature header: {}", stripeSignature);
+	private final StripeNotificationService stripeNotificationService;
 
-        stripeNotificationService.processNotification(stripeSignature, jsonRequest);
+	@PostMapping
+	public ResponseEntity<Void> process(
+			@RequestHeader(value = "Stripe-Signature", required = false) 
+			String stripeSignature,
+			@RequestBody String jsonRequest) {
+		// No business logic here — delegate to service and acknowledge with 200 OK
+		log.info("Received Stripe notification payload of length {}", 
+				jsonRequest != null ? jsonRequest.length() : 0);
+		log.info("Stripe-Signature header: {}", stripeSignature);
 
-        return ResponseEntity.ok().build();
-    }
+		stripeNotificationService.processNotification(stripeSignature, jsonRequest);
+
+		return ResponseEntity.ok().build();
+	}
 }
