@@ -7,13 +7,13 @@ import lombok.Data;
 @Data
 public class MerchantPaymentRequestEntity {
 
-    private Integer id;
+	private Integer id;
 
-    private String endUserID;
+	private String endUserID;
 
-    private String merchantTxnReference;
+	private String merchantTxnReference;
 
-    private String transactionRequest;
+	private String transactionRequest;
 
-    private Timestamp creationDate;
+	private Timestamp creationDate;
 }

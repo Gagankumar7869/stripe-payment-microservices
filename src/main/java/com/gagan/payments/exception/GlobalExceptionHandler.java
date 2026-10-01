@@ -17,45 +17,45 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(
-            MethodArgumentNotValidException ex) {
+	public ResponseEntity<ErrorResponse> handleValidation(
+			MethodArgumentNotValidException ex) {
 		log.error("Validation error occurred: {}", ex.getMessage());
 
-        FieldError fieldError = ex.getBindingResult()
-                .getFieldErrors()
-                .get(0);  
+		FieldError fieldError = ex.getBindingResult()
+				.getFieldErrors()
+				.get(0);  
 
-        String enumKey = fieldError.getDefaultMessage();
+		String enumKey = fieldError.getDefaultMessage();
 
-        ErrorCodeEnum errorCodeEnum = ErrorCodeEnum.valueOf(enumKey);
+		ErrorCodeEnum errorCodeEnum = ErrorCodeEnum.valueOf(enumKey);
 
-        ErrorResponse response = new ErrorResponse(
-                errorCodeEnum.getErrorCode(),
-                errorCodeEnum.getErrorMessage()
-        );
-        
-        log.error("Validation error: {}", response);
+		ErrorResponse response = new ErrorResponse(
+				errorCodeEnum.getErrorCode(),
+				errorCodeEnum.getErrorMessage()
+				);
 
-        return ResponseEntity.badRequest().body(response);
-    }
-	
+		log.error("Validation error: {}", response);
+
+		return ResponseEntity.badRequest().body(response);
+	}
+
 	@ExceptionHandler(PaymentValidationException.class)
-    public ResponseEntity<ErrorResponse> handlePaymentValidationException(PaymentValidationException ex) {
-        log.error("StripeProviderException caught: {}", ex.toString());
+	public ResponseEntity<ErrorResponse> handlePaymentValidationException(PaymentValidationException ex) {
+		log.error("StripeProviderException caught: {}", ex.toString());
 
-        HttpStatus status = ex.getHttpStatus();
+		HttpStatus status = ex.getHttpStatus();
 
-        ErrorResponse body = new ErrorResponse(
-        		ex.getErrorCode(), 
-        		ex.getErrorMessage());
+		ErrorResponse body = new ErrorResponse(
+				ex.getErrorCode(), 
+				ex.getErrorMessage());
 
-        log.error("Returning error response: status={}, body={}", status, body);
-        return new ResponseEntity<>(body, status);
-    }
-	
+		log.error("Returning error response: status={}, body={}", status, body);
+		return new ResponseEntity<>(body, status);
+	}
+
 	@ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-    			log.error("Generic exception caught: ", ex);
+	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+		log.error("Generic exception caught: ", ex);
 
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -65,5 +65,5 @@ public class GlobalExceptionHandler {
 
 		log.error("Returning generic error response: status={}, body={}", status, body);
 		return new ResponseEntity<>(body, status);
-    }
+	}
 }

@@ -17,24 +17,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidationRulesRepositoryImpl implements ValidationRulesRepository {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private static final String SELECT_ACTIVE_RULES_SQL = """
-            SELECT validatorName
-            FROM validation_rules
-            WHERE isActive = true
-            ORDER BY priority ASC
-            """;
+	private static final String SELECT_ACTIVE_RULES_SQL = """
+			SELECT validatorName
+			FROM validation_rules
+			WHERE isActive = true
+			ORDER BY priority ASC
+			""";
 
-    @Override
-    public List<String> loadActiveValidatorNamesOrderedByPriority() {
-        log.debug("Loading active validator names ordered by priority");
-        
-        List<String> names = namedParameterJdbcTemplate.query(
-        		SELECT_ACTIVE_RULES_SQL, 
-        		new MapSqlParameterSource(),
-                (rs, rowNum) -> rs.getString("validatorName")
-                );
-        return names == null ? new ArrayList<>() : names;
-    }
+	@Override
+	public List<String> loadActiveValidatorNamesOrderedByPriority() {
+		log.debug("Loading active validator names ordered by priority");
+
+		List<String> names = namedParameterJdbcTemplate.query(
+				SELECT_ACTIVE_RULES_SQL, 
+				new MapSqlParameterSource(),
+				(rs, rowNum) -> rs.getString("validatorName")
+				);
+		return names == null ? new ArrayList<>() : names;
+	}
 }

@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class PaymentRequest {
 
-    @NotNull(message = "USER_NULL")
-    @Valid
-    private User user;
+	@NotNull(message = "USER_NULL")
+	@Valid
+	private User user;
 
-    @NotNull(message = "PAYMENT_NULL")
-    @Valid
-    private Payment payment;
+	@NotNull(message = "PAYMENT_NULL")
+	@Valid
+	private Payment payment;
 
 }

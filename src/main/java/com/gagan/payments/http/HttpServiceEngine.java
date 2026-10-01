@@ -39,7 +39,7 @@ public class HttpServiceEngine {
 			return httpResponse;
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			log.error("HTTP client/server error occurred. Status code: {}", ex.getStatusCode());
-			
+
 			// Let downstream outages propagate so Resilience4j tracks them
 			if (ex.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE || ex.getStatusCode() == HttpStatus.GATEWAY_TIMEOUT) {
 				throw ex;
@@ -53,7 +53,7 @@ public class HttpServiceEngine {
 
 	public ResponseEntity<String> fallbackProcessPayment(HttpRequest httpRequest, Throwable t) {
 		log.error("Resilience4j Circuit Breaker fallback triggered! Downstream service unreachable: {}", t.getMessage());
-		
+
 		throw new PaymentValidationException(
 				ErrorCodeEnum.ERROR_CONNECTING_TO_EXTERNAL_SERVICE.getErrorCode(),
 				"External payment service is temporarily unavailable. Please try again later.",
